@@ -21,6 +21,7 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
     logger.info("Event: " + str(event))
     msg = str(event["detail"])
+    accountid = str(event["detail"]["userIdentity"]["accountId"])
     userarn = str(event["detail"]["userIdentity"]["arn"])
     principalId = str(event["detail"]["userIdentity"]["principalId"])
     eventtype = str(event["detail"]["eventType"])
