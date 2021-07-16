@@ -54,8 +54,7 @@ def lambda_handler(event, context):
                 'Minimum': 1.0,
                 'Maximum': 1.0
             },
-            'Unit': 'Count',
-            'Value': 1
+            'Unit': 'Count'
           },
           ],
           Namespace='CUSTOME/SignIn'
