@@ -48,6 +48,12 @@ def lambda_handler(event, context):
                     'Value': USER
                 },
             ],
+            'StatisticValues': {
+                'SampleCount': 1.0,
+                'Sum': 1.0,
+                'Minimum': 1.0,
+                'Maximum': 1.0
+            },
             'Unit': 'Count',
             'Value': 1
           },
