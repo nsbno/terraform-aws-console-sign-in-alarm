@@ -85,7 +85,8 @@ def lambda_handler(event, context):
           ],
           Namespace='noneadminSignIn'
         )
-def message_slack(slack_message)
+
+def message_slack(slack_message):
         req = Request(HOOK_URL, json.dumps(slack_message).encode('utf-8'))
         try:
           response = urlopen(req)
