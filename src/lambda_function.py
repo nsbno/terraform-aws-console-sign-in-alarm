@@ -27,7 +27,6 @@ def lambda_handler(event, context):
     eventtype = str(event["detail"]["eventType"])
     eventtime = str(event["detail"]["eventTime"])
     sourceIP = str(event["detail"]["sourceIPAddress"])
-    mfa = str(event["detail"]["additionalEventData"]["MFAUsed"])
     usr = principalId.split(":")
     USER = usr[1]
     iam = boto3.client('iam')
@@ -59,9 +58,34 @@ def lambda_handler(event, context):
           ],
           Namespace='CUSTOME/SignIn'
         )
-        slack_message = {
+        message = {
             'text': "*AWSLogin via Console* :face_with_monocle: \n - AccountAlias: %s \n - AccountId: %s \n - UserName: %s \n - RoleArn: %s \n - SourceIPAddress: %s \n - EventType: %s \n - EventTime: %s" % (alias, accountid, USER, userarn, sourceIP, eventtype, eventtime)
         }
+        message_slack(message)
+    else:
+        print ('No Admin role!')
+        cloudwatch.put_metric_data(
+          MetricData=[
+          {
+            'MetricName': 'NumberOfSignIn',
+            'Dimensions': [
+                {
+                    'Name': 'Username',
+                    'Value': USER
+                },
+            ],
+            'StatisticValues': {
+                'SampleCount': 1.0,
+                'Sum': 1.0,
+                'Minimum': 1.0,
+                'Maximum': 1.0
+            },
+            'Unit': 'Count'
+          },
+          ],
+          Namespace='noneadminSignIn'
+        )
+def message_slack(slack_message)
         req = Request(HOOK_URL, json.dumps(slack_message).encode('utf-8'))
         try:
           response = urlopen(req)
@@ -71,5 +95,3 @@ def lambda_handler(event, context):
           logger.error("Request failed: %d %s", e.code, e.reason)
         except URLError as e:
           logger.error("Server connection failed: %s", e.reason)
-    else:
-        print ('No Admin role!')
